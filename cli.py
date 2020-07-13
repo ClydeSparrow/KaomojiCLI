@@ -9,15 +9,7 @@ from clipboard import copy2clip
 
 
 class KaomojiCompleter(WordCompleter):
-
     KAOMOJI_SUB_REGEX = r'(\w+\s+)+'
-
-    def __init__(self, kaomoji_list, *args, **kwargs):
-        kwargs['sentence'] = True
-        kwargs['ignore_case'] = True
-        kwargs['match_middle'] = True
-
-        super().__init__(kaomoji_list, *args, **kwargs)
 
     def get_kaomoji(self, text: str) -> str:
         return re.sub(self.KAOMOJI_SUB_REGEX, '', text)
@@ -28,20 +20,11 @@ class KaomojiCompleter(WordCompleter):
         if callable(words):
             words = words()
 
-        word_before_cursor = document.text_before_cursor
-
-        if self.ignore_case:
-            word_before_cursor = word_before_cursor.lower()
+        word_before_cursor = document.text_before_cursor.lower()
 
         def word_matches(word: str) -> bool:
             """ True when the word before the cursor matches. """
-            if self.ignore_case:
-                word = word.lower()
-
-            if self.match_middle:
-                return word_before_cursor in word
-            else:
-                return word.startswith(word_before_cursor)
+            return word_before_cursor in word.lower()
 
         for a in words:
             if word_matches(a):
@@ -51,19 +34,19 @@ class KaomojiCompleter(WordCompleter):
 
 def main():
     words = []
-    with open('kaomoji') as f:
+    with open('data/kaomoji') as f:
         words.extend([line[:-1] for line in f.readlines()])
-    kaomoji_completer = KaomojiCompleter(kaomoji_list=words)
+    kaomoji_completer = KaomojiCompleter(words=words)
 
     while True:
         try:
             text = prompt(
-                "Give me idea: ",
+                "Give me an idea: ",
                 completer=kaomoji_completer,
                 complete_style=CompleteStyle.MULTI_COLUMN,
             )
             copy2clip(text)
-            print(f"{text}")
+            print(f"{text} copied to clipboard")
         except (KeyboardInterrupt, EOFError):
             print("Quitting...")
             break
