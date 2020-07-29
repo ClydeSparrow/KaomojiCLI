@@ -1,4 +1,6 @@
 import re
+import os
+
 from typing import Iterable
 
 from prompt_toolkit.completion import WordCompleter, CompleteEvent, Completion
@@ -6,6 +8,8 @@ from prompt_toolkit.document import Document
 from prompt_toolkit.shortcuts import CompleteStyle, prompt
 
 from clipboard import copy2clip
+
+DATA_FOLDER = 'data/'
 
 
 class KaomojiCompleter(WordCompleter):
@@ -34,8 +38,11 @@ class KaomojiCompleter(WordCompleter):
 
 def main():
     words = []
-    with open('data/kaomoji') as f:
-        words.extend([line[:-1] for line in f.readlines()])
+    for file in os.listdir('data'):
+        with open(os.path.join(DATA_FOLDER, file)) as f:
+            # TODO: Add validation?
+            words.extend([line[:-1] for line in f.readlines()])
+
     kaomoji_completer = KaomojiCompleter(words=words)
 
     while True:

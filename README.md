@@ -22,7 +22,7 @@ python setup.py install
 ## What's next
 - [ ] More kaomoji (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧
 - [ ] More and better categories
-- [ ] Import kaomoji from any file in `data` directory
+- [ ] Fix regular expression
 - [ ] Search history
 - [ ] Show recently used kaomoji in beginning of options list
 - [ ] Synonyms recognition
